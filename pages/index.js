@@ -6,7 +6,7 @@ import { fetchDataFromApi } from "@/utils/api";
 
 
 export default function Home({ products }) {
-    // console.log(products?.data?.[0].attributes)
+    // console.log("huu",products)
     return <main>
         <HeroBanner />
         <Wrapper>
@@ -26,7 +26,7 @@ export default function Home({ products }) {
 
                 
                 {products?.data?.map((product) => (
-                    <CardProduct key={product?.id} data={product} />
+                    <CardProduct key={product?.id} data={product} />   //changed
                 ))}
 
             </div>

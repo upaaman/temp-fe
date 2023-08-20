@@ -2,6 +2,7 @@ import ProductDetailsCarousel from '@/components/ProductDetailsCarousel'
 import RelatedProducts from '@/components/RelatedProducts'
 import Wrapper from '@/components/Wrapper'
 import { addToCart } from '@/store/cartSlice'
+import { addToWishList } from '@/store/wishListSlice'
 import { fetchDataFromApi } from '@/utils/api'
 import { getDiscountPErcentage } from '@/utils/helperFunctions'
 import React, { useState } from 'react'
@@ -20,22 +21,34 @@ const ProductDetails = ({ products, product }) => {
     const p = product?.data?.[0].attributes;
     // console.log("product data ", product)
 
-        const notify=()=>{
-            toast.success('Item added Successfully!!', {
-                position: "top-center",
-                autoClose: 4000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-                });
-        }
+    const notifyCart = () => {
+        toast.success('Successfully added to cart', {
+            position: "top-center",
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+    }
+    const notifyWishList = () => {
+        toast('❤️ Item added to wishlist', {
+            position: "top-center",
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+    }
 
     return (
         <div className="w-full md:py-20">
-            <ToastContainer/>
+            <ToastContainer />
             <Wrapper>
                 <div className="flex flex-col lg:flex-row md:px-10 gap-[50px] lg:gap-[100px]">
                     {/* ------------------------------left column start------------------------------ */}
@@ -100,6 +113,7 @@ const ProductDetails = ({ products, product }) => {
 
                                 {p?.size?.data.map((item, i) => (
                                     <div
+                                        key={i}
                                         onClick={() => {
                                             setShowError(false);
                                             setSizeSelect(item.size);
@@ -140,13 +154,13 @@ const ProductDetails = ({ products, product }) => {
 
                                 }
                                 else {
-                                    
+
                                     dispatch(addToCart({
                                         ...product?.data?.[0],
                                         sizeSelect,
-                                        singleItemPrice:p.price
+                                        singleItemPrice: p.price
                                     }))
-                                    notify();
+                                    notifyCart();
 
                                 }
 
@@ -158,7 +172,12 @@ const ProductDetails = ({ products, product }) => {
 
                         {/* WHISHLIST BUTTON START */}
                         <button className="w-full py-4 rounded-full border border-black text-lg font-medium transition-transform
-    active:scale-95 flex items-center justify-center gap-2 hover:opacity-75 mb-10">
+    active:scale-95 flex items-center justify-center gap-2 hover:opacity-75 mb-10"
+                            onClick={()=>{
+                                dispatch(addToWishList({...product?.data?.[0]}));
+                                notifyWishList();
+                            }}
+                        >
                             Whishlist
                             <IoMdHeartEmpty size={20} />
                         </button>

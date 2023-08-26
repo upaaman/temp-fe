@@ -13,8 +13,8 @@ const wishList = () => {
     return (
         <Wrapper className="mt-[40px] mb-[90px]">
             {wishListItems?.length > 0 && <>
-                <div className=" max-w-[800px] mx-auto mt-8 md:mt-[40px]">
-                    <div className="text-[28px] md:text-[34px] mb-5 font-semibold leading-tight">
+                <div className=" max-w-[800px] mx-auto text-center mt-8 md:mt-[40px]">
+                    <div className="text-[28px]  md:text-[34px] mb-5 font-semibold leading-tight">
                         Your Wishlist
                     </div>
                 </div>

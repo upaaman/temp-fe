@@ -5,18 +5,19 @@ import { addToCart } from '@/store/cartSlice'
 import { addToWishList } from '@/store/wishListSlice'
 import { fetchDataFromApi } from '@/utils/api'
 import { getDiscountPErcentage } from '@/utils/helperFunctions'
+import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { IoMdHeartEmpty } from 'react-icons/io'
 import ReactMarkdown from "react-markdown";
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 
 const ProductDetails = ({ products, product }) => {
     const [sizeSelect, setSizeSelect] = useState();
     const [showError, setShowError] = useState(true);
     const dispatch = useDispatch();
+    const router = useRouter()
 
     const p = product?.data?.[0].attributes;
     // console.log("product data ", product)
@@ -33,19 +34,6 @@ const ProductDetails = ({ products, product }) => {
             theme: "light",
         });
     }
-    const notifyWishList = () => {
-        toast('❤️ Item added to wishlist', {
-            position: "top-center",
-            autoClose: 4000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-        });
-    }
-
     return (
         <div className="w-full md:py-20">
             <ToastContainer />
@@ -173,9 +161,9 @@ const ProductDetails = ({ products, product }) => {
                         {/* WHISHLIST BUTTON START */}
                         <button className="w-full py-4 rounded-full border border-black text-lg font-medium transition-transform
     active:scale-95 flex items-center justify-center gap-2 hover:opacity-75 mb-10"
-                            onClick={()=>{
-                                dispatch(addToWishList({...product?.data?.[0]}));
-                                notifyWishList();
+                            onClick={() => {
+                                dispatch(addToWishList({ ...product?.data?.[0] }));
+                                router.push("/wishList");
                             }}
                         >
                             Whishlist
@@ -202,7 +190,6 @@ const ProductDetails = ({ products, product }) => {
         </div>
     )
 }
-
 export default ProductDetails
 
 

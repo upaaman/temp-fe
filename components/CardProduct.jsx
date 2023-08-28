@@ -8,18 +8,6 @@ const CardProduct = ({ data }) => {
     // console.log(p)
     // console.log("Printing card data",data)
 
-    const notifyWishListAdded = () => {
-        toast.success('Item added to wishlist ❤️', {
-            position: "top-center",
-            autoClose: 4000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            });
-    }
 
     return (
             <Link href={`/product/${p?.slug}`}

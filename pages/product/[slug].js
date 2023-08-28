@@ -2,30 +2,66 @@ import ProductDetailsCarousel from '@/components/ProductDetailsCarousel'
 import RelatedProducts from '@/components/RelatedProducts'
 import Wrapper from '@/components/Wrapper'
 import { addToCart } from '@/store/cartSlice'
-import { addToWishList } from '@/store/wishListSlice'
+import { addToWishList, removeFromWishList } from '@/store/wishListSlice'
 import { fetchDataFromApi } from '@/utils/api'
 import { getDiscountPErcentage } from '@/utils/helperFunctions'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { IoMdHeartEmpty } from 'react-icons/io'
 import ReactMarkdown from "react-markdown";
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {AiFillHeart} from "react-icons/ai"
 
 const ProductDetails = ({ products, product }) => {
     const [sizeSelect, setSizeSelect] = useState();
     const [showError, setShowError] = useState(true);
     const dispatch = useDispatch();
     const router = useRouter()
+    const { cartItems } = useSelector((state => state.cart));
+    const { wishListItems } = useSelector((state => state.wishList));
+    console.log("Printing wish list items",wishListItems);
 
     const p = product?.data?.[0].attributes;
     // console.log("product data ", product)
+    //search for item in cart ..if it already in cart then show different button
+    const item = cartItems?.find((p) =>
+        p.id == product?.data?.[0].id)
+
+    // wishlist items check
+    const presentInWish = wishListItems?.find((q) =>
+        q.id == product?.data?.[0].id)
+    // console.log("present in wish list ",presentInWish);
 
     const notifyCart = () => {
         toast.success('Successfully added to cart', {
             position: "top-center",
-            autoClose: 4000,
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+    }
+    const notifyAddedToWish = () => {
+        toast('Added to WishList ❤️', {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+    }
+    const notifyRemoveWish = () => {
+        toast('Removed from WishList 💔', {
+            position: "top-center",
+            autoClose: 3000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -120,7 +156,7 @@ const ProductDetails = ({ products, product }) => {
 
                             {/* SHOW ERROR START */}
 
-                            {showError && <div className="text-red-600 mt-1">
+                            {showError && (!item) && <div className="text-red-600 mt-1">
                                 Size selection is required
                             </div>}
 
@@ -129,46 +165,77 @@ const ProductDetails = ({ products, product }) => {
                         {/* PRODUCT SIZE RANGE END */}
 
                         {/* ADD TO CART BUTTON START */}
-                        <button
-                            className="w-full py-4 rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 
+                        {item ?
+                            <button
+                                className="w-full py-4 group rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 
                             mb-3 hover:opacity-75"
-                            onClick={() => {
-                                if (!sizeSelect) {
-                                    setShowError(true);
-                                    document.getElementById("sizesGrid").scrollIntoView({
-                                        block: "center",
-                                        behavior: "smooth"
-                                    })
+                                onClick={() => {
+                                    router.push("/cart");
+                                }}
+                            >
+                                <h1 className='block group-hover:hidden'>Item In Cart</h1>
+                                <h1 className="hidden group-hover:block">View Cart</h1>
+                            </button> :
+                            <button
+                                className="w-full py-4 rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95
+                                mb-3 hover:opacity-75"
+                                onClick={() => {
+                                    if (!sizeSelect) {
+                                        setShowError(true);
+                                        document.getElementById("sizesGrid").scrollIntoView({
+                                            block: "center",
+                                            behavior: "smooth"
+                                        })
+                                    }
+                                    else {
+                                        dispatch(addToCart({
+                                            ...product?.data?.[0],
+                                            sizeSelect,
+                                            singleItemPrice: p.price
+                                        }))
+                                        notifyCart();
+                                    }
+                                }}
+                            >
+                                Add To Cart
+                            </button>}
 
-                                }
-                                else {
 
-                                    dispatch(addToCart({
-                                        ...product?.data?.[0],
-                                        sizeSelect,
-                                        singleItemPrice: p.price
-                                    }))
-                                    notifyCart();
-
-                                }
-
-                            }}
-                        >
-                            Add to Cart
-                        </button>
                         {/* ADD TO CART BUTTON END */}
 
                         {/* WHISHLIST BUTTON START */}
-                        <button className="w-full py-4 rounded-full border border-black text-lg font-medium transition-transform
-    active:scale-95 flex items-center justify-center gap-2 hover:opacity-75 mb-10"
-                            onClick={() => {
-                                dispatch(addToWishList({ ...product?.data?.[0] }));
-                                router.push("/wishList");
-                            }}
-                        >
-                            Whishlist
-                            <IoMdHeartEmpty size={20} />
-                        </button>
+                        {
+                            presentInWish ?
+                                <button className="w-full 00 py-4 rounded-full border border-black text-lg font-medium transition-transform
+                            active:scale-95 flex items-center justify-center gap-2 hover:opacity-75 mb-10"
+                                    onClick={() => {
+                                        dispatch(removeFromWishList({ id: item?.id }));
+                                        // router.push("/wishList");
+                                        notifyRemoveWish();
+                                    }}
+                                >
+                                    Whishlist
+                                    <AiFillHeart className='text-red-600' size={22} />
+                                </button>
+                                :
+                                <button className="w-full py-4 rounded-full border border-black text-lg font-medium transition-transform
+                                                active:scale-95 flex items-center justify-center gap-2 hover:opacity-75 mb-10"
+                                    onClick={() => {
+                                        dispatch(addToWishList({
+                                            ...product?.data?.[0]
+                                        }));
+                                        // router.push("/wishList");
+                                        notifyAddedToWish();
+                                    }}
+                                >
+                                    Whishlist
+                                    <IoMdHeartEmpty  size={22} />
+                                </button>
+
+                        }
+
+
+
                         {/* WHISHLIST BUTTON END */}
 
                         <div>

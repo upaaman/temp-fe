@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 const wishList = () => {
     const dispatch = useDispatch();
     const { wishListItems } = useSelector((state => state.wishList))
-    console.log("WishList Items", wishListItems);
+    // console.log("WishList Items", wishListItems);
     return (
         <Wrapper className="mt-[40px] mb-[90px]">
             {wishListItems?.length > 0 && <>

@@ -31,8 +31,8 @@ const ProductDetails = ({ products, product }) => {
 
     // wishlist items check
     const presentInWish = wishListItems?.find((q) =>
-        q.id == product?.data?.[0].id)
-    // console.log("present in wish list ",presentInWish);
+        q?.id == product?.data?.[0].id)
+    console.log("present in wish list ",presentInWish);
 
     const notifyCart = () => {
         toast.success('Successfully added to cart', {
@@ -209,7 +209,7 @@ const ProductDetails = ({ products, product }) => {
                                 <button className="w-full 00 py-4 rounded-full border border-black text-lg font-medium transition-transform
                             active:scale-95 flex items-center justify-center gap-2 hover:opacity-75 mb-10"
                                     onClick={() => {
-                                        dispatch(removeFromWishList({ id: item?.id }));
+                                        dispatch(removeFromWishList({ id: presentInWish?.id }));
                                         // router.push("/wishList");
                                         notifyRemoveWish();
                                     }}

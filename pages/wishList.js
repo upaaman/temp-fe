@@ -7,7 +7,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 const wishList = () => {
-    const dispatch = useDispatch();
+    const dispatch=useDispatch();
     const { wishListItems } = useSelector((state => state.wishList))
     // console.log("WishList Items", wishListItems);
     return (

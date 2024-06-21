@@ -11,7 +11,7 @@ const stripePromise = loadStripe(
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
 
-const cart = () => {
+const Cart = () => {
     const [loading, setLoading] = useState(false);
     const { cartItems } = useSelector((state => state.cart))
     console.log("Logging cartItems",cartItems)
@@ -132,4 +132,4 @@ const cart = () => {
     )
 }
 
-export default cart
+export default Cart
